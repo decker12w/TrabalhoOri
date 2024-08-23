@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "TabelaHash.h"
+#include "ArvoreAux.h"
 struct hash
 {
-    int qtd, TABLE_SIZE;
-    struct ArvPostagem **posts;
+    int TABLE_SIZE;
+    struct ArvoreAux **ArvPosts;
 };
 
 Hash *criaHash(int TABLE_SIZE)
@@ -15,20 +16,20 @@ Hash *criaHash(int TABLE_SIZE)
     {
         int i;
         ha->TABLE_SIZE = TABLE_SIZE;
-        ha->posts = (struct aluno **)malloc(TABLE_SIZE * sizeof(struct aluno *));
-        if (ha->posts == NULL)
+        ha->ArvPosts = (struct ArvoreAux **)malloc(TABLE_SIZE * sizeof(struct ArvoreAux *));
+        if (ha->ArvPosts == NULL)
         {
             free(ha);
             return NULL;
         }
-        ha->qtd = 0;
+
         for (i = 0; i < ha->TABLE_SIZE; i++)
-            ha->posts[i] = NULL;
+            ha->ArvPosts[i] = criaArvore();
     }
     return ha;
 }
 
-void liberaHash(Hash *ha)
+/* void liberaHash(Hash *ha)
 {
     if (ha != NULL)
     {
@@ -41,4 +42,4 @@ void liberaHash(Hash *ha)
         free(ha->posts);
         free(ha);
     }
-}
+} */
