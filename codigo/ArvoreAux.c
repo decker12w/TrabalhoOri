@@ -1,4 +1,3 @@
-// ArvoreAux.c content
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,8 +16,8 @@ Postagem *criaPostagem(char palavra[], int RRN)
     Postagem *post = (Postagem *)malloc(sizeof(Postagem));
     if (post == NULL)
         return NULL;
-    post->quantPalavras = 1;                // Start with 1 RRN
-    post->RRN = (int *)malloc(sizeof(int)); // Allocate space for 1 RRN
+    post->quantPalavras = 1;
+    post->RRN = (int *)malloc(sizeof(int));
     if (post->RRN == NULL)
     {
         free(post);
@@ -27,7 +26,7 @@ Postagem *criaPostagem(char palavra[], int RRN)
     strcpy(post->palavra, palavra);
     post->esq = NULL;
     post->dir = NULL;
-    post->RRN[0] = RRN; // Set the first RRN
+    post->RRN[0] = RRN;
 
     return post;
 }
@@ -108,10 +107,10 @@ void imprimeArvore(ArvoreAux *raiz)
     imprimeArvore(&((*raiz)->dir));
 }
 
-// Teste de funcionamento da árvore
+/* // Teste de funcionamento da árvore
 int main()
 {
-    int *RRN1 = NULL, *RRN2 = NULL;
+    int *RRN1, *RRN2;
 
     ArvoreAux *raiz = criaArvore();
     insere_arvore(raiz, "teste", 1);
@@ -133,4 +132,4 @@ int main()
 
     imprimeArvore(raiz);
     liberaArvore(raiz);
-}
+} */
