@@ -82,7 +82,7 @@ void insere_arvore(ArvoreAux *raiz, char palavra[], int RRN)
     }
 }
 
-int busca_arvore(ArvoreAux *raiz, int *RRN, char palavra[])
+int busca_arvore(ArvoreAux *raiz, int **RRN, char palavra[])
 {
     if (raiz == NULL)
         return -1;
@@ -93,14 +93,15 @@ int busca_arvore(ArvoreAux *raiz, int *RRN, char palavra[])
 
     if (strcmp(palavra, (*raiz)->palavra) < 0)
     {
-        return busca_arvore(&((*raiz)->esq), palavra);
+        return busca_arvore(&((*raiz)->esq), RRN, palavra);
     }
     else if (strcmp(palavra, (*raiz)->palavra) > 0)
     {
-        return busca_arvore(&((*raiz)->dir), palavra);
+        return busca_arvore(&((*raiz)->dir), RRN, palavra);
     }
     else if (strcmp(palavra, (*raiz)->palavra) == 0)
     {
+        *RRN = (*raiz)->RRN;
         return 1;
     }
     else
