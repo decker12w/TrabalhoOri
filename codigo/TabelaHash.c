@@ -72,7 +72,7 @@ unsigned long funcaoHash(char *str)
     return hash;
 }
 
-// Teste de funcionamento da árvore
+/* // Teste de funcionamento da árvore
 int main()
 {
     int *RRN1, *RRN2;
@@ -101,3 +101,4 @@ int main()
 
     liberaHash(hash);
 }
+ */

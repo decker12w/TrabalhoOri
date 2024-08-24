@@ -9,7 +9,7 @@
       "stopAtEntry": false,
       "externalConsole": false,
       "cwd": "/home/jose/trabOri",
-      "program": "/home/jose/trabOri/build/Debug/outDebug",
+      "program": "/home/jose/trabOri/codigo/codigo",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

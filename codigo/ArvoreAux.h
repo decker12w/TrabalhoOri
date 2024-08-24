@@ -6,7 +6,7 @@
 typedef Postagem *ArvoreAux;
 
 ArvoreAux *criaArvore();
-Postagem *criaPostagem(char palavra[], int RRN);
+
 void liberaNo(Postagem *no);
 void liberaArvore(ArvoreAux *raiz);
 void insere_arvore(ArvoreAux *raiz, char palavra[], int RRN);

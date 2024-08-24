@@ -11,26 +11,6 @@ ArvoreAux *criaArvore()
     return raiz;
 }
 
-Postagem *criaPostagem(char palavra[], int RRN)
-{
-    Postagem *post = (Postagem *)malloc(sizeof(Postagem));
-    if (post == NULL)
-        return NULL;
-    post->quantPalavras = 1;
-    post->RRN = (int *)malloc(sizeof(int));
-    if (post->RRN == NULL)
-    {
-        free(post);
-        return NULL;
-    }
-    strcpy(post->palavra, palavra);
-    post->esq = NULL;
-    post->dir = NULL;
-    post->RRN[0] = RRN;
-
-    return post;
-}
-
 void liberaNo(Postagem *no)
 {
     if (no == NULL)
@@ -49,7 +29,7 @@ void liberaArvore(ArvoreAux *raiz)
     free(raiz);
 }
 
-void insere_arvore(ArvoreAux *raiz, char palavra[], int RRN)
+void insere_arvore(ArvoreAux *raiz, char *palavra, int RRN)
 {
     if (raiz == NULL)
     {

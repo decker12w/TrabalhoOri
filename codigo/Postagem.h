@@ -4,10 +4,11 @@
 
 typedef struct Postagem
 {
-    char palavra[100];
+    char *palavra;
     int *RRN;
     int quantPalavras;
     struct Postagem *esq, *dir;
 } Postagem;
 
+Postagem *criaPostagem(char *palavra, int RRN);
 #endif
