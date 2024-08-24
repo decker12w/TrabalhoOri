@@ -140,7 +140,7 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
     return 0;
 }
 
-int main()
+/* int main()
 {
     Hash *tab = criaHash(10);
     if (lerArquivo("corpus.csv", tab) == -1)
@@ -151,4 +151,4 @@ int main()
         printf("Encontrou vetor de rrn %d\n", RRN[0]);
     else
         printf("Não encontrou\n");
-}
+} */
