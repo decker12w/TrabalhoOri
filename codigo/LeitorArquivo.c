@@ -112,11 +112,19 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
             }
 
             texto = tratadorTexto(texto);
+
+            char *palavra;
             printf("Texto: %s\n", texto);
-            Postagem *post = criaPostagem(texto, atoi(docID));
-            if (post == NULL || insereHash(hash, post) != 0)
+
+            palavra = strtok(texto, " ");
+            while (palavra != NULL)
             {
-                printf("Erro ao inserir postagem %s\n", texto);
+                Postagem *post = criaPostagem(palavra, atoi(docID));
+                if (post == NULL || insereHash(hash, post) != 0)
+                {
+                    printf("Erro ao inserir postagem %s\n", texto);
+                }
+                palavra = strtok(NULL, " ");
             }
         }
 
@@ -138,8 +146,8 @@ int main()
     if (lerArquivo("corpus.csv", tab) == -1)
         printf("Erro ao ler arquivo\n");
 
-    int *RRN;
-    if (buscaHash(tab, &RRN, "already"))
+    int *RRN = NULL;
+    if (buscaHash(tab, &RRN, "omg"))
         printf("Encontrou vetor de rrn %d\n", RRN[0]);
     else
         printf("Não encontrou\n");
