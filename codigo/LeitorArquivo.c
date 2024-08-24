@@ -96,7 +96,7 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
         line_number++;
 
         // Processa apenas as linhas 3, 4 e 5
-        if (line_number >= 3 && line_number <= 5)
+        if (line_number >= 1 && line_number <= 100)
         {
             // Remove o newline do final da linha, se houver
             line[strcspn(line, "\n")] = '\0';
@@ -114,8 +114,6 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
             texto = tratadorTexto(texto);
 
             char *palavra;
-            printf("Texto: %s\n", texto);
-
             palavra = strtok(texto, " ");
             while (palavra != NULL)
             {
@@ -129,7 +127,7 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
         }
 
         // Pula as linhas após a 5ª
-        if (line_number > 5)
+        if (line_number > 100)
         {
             break;
         }

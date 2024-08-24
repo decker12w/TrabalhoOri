@@ -11,7 +11,7 @@ int main()
 
     int *RRN = NULL;
     int value;
-    if (value = (buscaHash(tab, &RRN, "odsfsafsdmg") != -1))
+    if (value = (buscaHash(tab, &RRN, "ok") != -1))
         printf("Encontrou vetor de rrn %d\n", RRN[0]);
     else
         printf("Não encontrou\n");

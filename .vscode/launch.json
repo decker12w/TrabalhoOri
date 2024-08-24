@@ -6,10 +6,10 @@
       "type": "cppdbg",
       "request": "launch",
       "args": [],
-      "stopAtEntry": false,
+      "stopAtEntry": true,
       "externalConsole": false,
-      "cwd": "/home/jose/trabOri",
-      "program": "/home/jose/trabOri/codigo/codigo",
+      "cwd": "/home/jose/trabOri/codigo",
+      "program": "${workspaceRoot}/codigo/codigo",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
