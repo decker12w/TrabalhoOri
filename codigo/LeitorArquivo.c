@@ -138,6 +138,15 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
     return 0;
 }
 
+char *BurcarPeloRRN(char *nomeArquivo, int rrn)
+{
+    FILE *file = fopen(nomeArquivo, "r");
+    if (file == NULL)
+    {
+        perror("Erro ao abrir o arquivo");
+        return NULL;
+    }
+}
 /* int main()
 {
     Hash *tab = criaHash(10);
