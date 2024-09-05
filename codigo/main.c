@@ -88,7 +88,8 @@ int main()
     if (resultado != NULL)
     {
         printf("Resultado: Conjunto encontrado.\n");
-        value = buscaHash(tab, &RRN, entrada); // Simulando a busca por RRN
+        value = buscaHash(tab, entrada, RRN); // Passa a palavra 'entrada' e o ponteiro 'RRN'
+
         if (value != -1 && RRN != NULL)
         {
             for (int j = 0; j < value; j++)

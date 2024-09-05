@@ -89,47 +89,30 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
-    int line_number = 0;
 
     while ((read = getline(&line, &len, file)) != -1)
     {
-        line_number++;
+        int tamanhoLinha = strlen(line);
+        int rrn = ftell(file) - tamanhoLinha;
 
-        // Processa apenas as linhas 3, 4 e 5
-        if (line_number >= 1 && line_number <= 100)
+        line[strcspn(line, "\n")] = '\0';
+
+        char *docID = strtok(line, ",");
+        char *opiniao = strtok(NULL, ",");
+        char *texto = strtok(NULL, ",");
+
+        texto = tratadorTexto(texto);
+
+        char *palavra;
+        palavra = strtok(texto, " ");
+        while (palavra != NULL)
         {
-            // Remove o newline do final da linha, se houver
-            line[strcspn(line, "\n")] = '\0';
-
-            // Quebra a linha em colunas usando o delimitador ','
-            char *docID = strtok(line, ",");
-            char *opiniao = strtok(NULL, ",");
-            char *texto = strtok(NULL, ",");
-
-            if (docID == NULL || opiniao == NULL || texto == NULL)
+            Postagem *post = criaPostagem(palavra, rrn, tamanhoLinha);
+            if (post == NULL || insereHash(hash, post) != 0)
             {
-                printf("Erro ao ler linha %d\n", line_number);
+                printf("Erro ao inserir postagem %s\n", texto);
             }
-
-            texto = tratadorTexto(texto);
-
-            char *palavra;
-            palavra = strtok(texto, " ");
-            while (palavra != NULL)
-            {
-                Postagem *post = criaPostagem(palavra, atoi(docID));
-                if (post == NULL || insereHash(hash, post) != 0)
-                {
-                    printf("Erro ao inserir postagem %s\n", texto);
-                }
-                palavra = strtok(NULL, " ");
-            }
-        }
-
-        // Pula as linhas após a 5ª
-        if (line_number > 100)
-        {
-            break;
+            palavra = strtok(NULL, " ");
         }
     }
 
@@ -138,15 +121,62 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
     return 0;
 }
 
-/* int main()
+int BuscarPeloRRN(char *nomeArquivo, int rrn[], int tamanhoVetor)
 {
-    Hash *tab = criaHash(10);
-    if (lerArquivo("corpus.csv", tab) == -1)
-        printf("Erro ao ler arquivo\n");
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL)
+    {
+        printf("Erro ao abrir o arquivo.\n");
+        return -1;
+    }
 
+    char *linha = NULL;
+    size_t tamanho = 0;
+    ssize_t lido;
+
+    for (int i = 0; i < tamanhoVetor; i++)
+    {
+        // Usa fseek para pular para a posição do RRN
+        fseek(arquivo, rrn[i], SEEK_SET);
+
+        // Lê a linha na posição do RRN
+        lido = getline(&linha, &tamanho, arquivo);
+        if (lido != -1)
+        {
+            // Processa a linha
+            char *docID_str = strtok(linha, ",");
+            char *opiniao = strtok(NULL, ",");
+            char *texto = strtok(NULL, "\n");
+
+            texto = tratadorTexto(texto);
+
+            printf("Frase encontrada: %s\n", texto);
+        }
+        // Importante: Não feche o arquivo ou libere a linha aqui, pois isso será feito após o loop
+    }
+
+    // Libera a linha e fecha o arquivo após o loop
+    free(linha);
+    fclose(arquivo);
+
+    return 0;
+}
+
+void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra)
+{
     int *RRN = NULL;
-    if (buscaHash(tab, &RRN, "omg"))
+    int tamanhoVetor;
+    if ((tamanhoVetor = buscaHash(hash, &RRN, palavra)) != -1)
         printf("Encontrou vetor de rrn %d\n", RRN[0]);
     else
         printf("Não encontrou\n");
-} */
+    BuscarPeloRRN("corpus.csv", RRN, tamanhoVetor);
+}
+
+int main()
+{
+    Hash *tab = criaHash(10017);
+    if (lerArquivo("corpus.csv", tab) == -1)
+        printf("Erro ao ler arquivo\n");
+    BuscarPalavra("corpus.csv", tab, "jose");
+}

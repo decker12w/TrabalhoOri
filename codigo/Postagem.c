@@ -3,7 +3,7 @@
 #include <string.h>
 #include "Postagem.h"
 
-Postagem *criaPostagem(char *palavra, int RRN)
+Postagem *criaPostagem(char *palavra, int RRN, int tamanhoLinha)
 {
     Postagem *post = (Postagem *)malloc(sizeof(Postagem));
     if (post == NULL)
@@ -11,7 +11,7 @@ Postagem *criaPostagem(char *palavra, int RRN)
         perror("Erro ao alocar memória para Postagem");
         return NULL;
     }
-
+    post->tamanhoLinha = tamanhoLinha;
     post->quantPalavras = 1;
     post->RRN = (int *)malloc(sizeof(int));
     if (post->RRN == NULL)

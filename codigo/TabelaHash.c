@@ -53,7 +53,7 @@ int insereHash(Hash *ha, Postagem *post)
         return -1;
     // Calcula a posição na tabela hash com base na função hash
     int pos = funcaoHash(post->palavra) % ha->TABLE_SIZE;
-    insere_arvore(ha->ArvPosts[pos], post->palavra, post->RRN[0]);
+    insere_arvore(ha->ArvPosts[pos], post->palavra, post->RRN[0], post->tamanhoLinha);
     return 0;
 }
 
@@ -92,7 +92,7 @@ int main()
     for (int i = 0; i < 10; i++)
     {
         sprintf(palavra, "teste%d", i);
-        Postagem *post = criaPostagem(palavra, i);
+        Postagem *post = criaPostagem(palavra, i, i);
         insereHash(hash, post);
     }
 
