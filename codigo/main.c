@@ -243,7 +243,6 @@ int main()
     }
 
     return 0;
-    docID, OpdocID, Opiniao, Textoiniao, Texto
 }
 /*
 

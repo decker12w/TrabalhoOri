@@ -8,7 +8,7 @@ typedef struct Postagem
     int *RRN;
     int quantPalavras;
     int tamanhoLinha;
-
+    int altura;
     struct Postagem *esq, *dir;
 } Postagem;
 
