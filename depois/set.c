@@ -181,3 +181,20 @@ Set *interseccaoSet(Set *A, Set *B)
     }
     return C;
 }
+
+Set *NOTInterseccaoSet(Set *A, Set *B)
+{
+    if (A == NULL || B == NULL)
+        return NULL;
+    int x;
+    Set *C = criaSet();
+
+    for (beginSet(B); !endSet(B); nextSet(B))
+    {
+        getItemSet(A, &x);
+        if (!consultaSet(B, x))
+            insereSet(C, x);
+    }
+
+    return C;
+}
