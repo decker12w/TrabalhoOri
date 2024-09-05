@@ -15,3 +15,4 @@ void beginSet(Set *s);
 int endSet(Set *s);
 void nextSet(Set *s);
 void getItemSet(Set *s, int *num);
+Set *NOTInterseccaoSet(Set *A, Set *B);
