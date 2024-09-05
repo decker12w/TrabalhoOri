@@ -12,7 +12,7 @@ int main()
 {
     FILE *arquivo;
     char linha[256];
-    char *frase, *token;
+    char *token;
     Hash *tab = criaHash(11); // Cria a tabela hash
 
     // Abrir o arquivo para leitura
@@ -26,10 +26,25 @@ int main()
     // Leitura linha por linha e inserção na tabela hash
     while (fgets(linha, sizeof(linha), arquivo))
     {
-        // Simulando a inserção na tabela hash
-        printf("Linha lida: %s\n", linha);
-        // Aqui você pode adicionar a lógica para inserir os dados da linha na tabela hash
-        // usando as funções de inserção específicas da sua hash
+        // Suponha que os dados da linha estejam no formato "palavra,RRN,tamanhoLinha"
+        // Exemplo de linha: "palavra,5,30"
+        token = strtok(linha, ",");
+        char *palavra = strdup(token); // Copiar a palavra
+
+        token = strtok(NULL, ",");
+        int RRN = atoi(token); // Converter o RRN para int
+
+        token = strtok(NULL, ",");
+        int tamanhoLinha = atoi(token); // Converter o tamanho da linha para int
+
+        // Criar uma nova postagem usando a função criaPostagem
+        Postagem *post = criaPostagem(palavra, RRN, tamanhoLinha);
+
+        // Inserir a nova postagem na tabela hash
+        insereHash(tab, post); // Função `insereHash` deve estar definida no seu `TabelaHash.c`
+
+        // Liberação de memória para a palavra (que foi duplicada)
+        free(palavra);
     }
 
     // Fechar o arquivo após a leitura
@@ -37,7 +52,7 @@ int main()
 
     // Continuar com o restante da lógica do programa
     char entrada[200];
-    int *RRN = NULL;
+    int *RRN = (int *)malloc(MAXTAM_DADOS * sizeof(int));
     int numComponentes = 0, value;
 
     // Leitura da frase de entrada
@@ -55,6 +70,7 @@ int main()
     {
         printf("Erro ao separar a frase em componentes.\n");
         liberaHash(tab);
+        free(RRN);
         return 1;
     }
 
@@ -72,6 +88,7 @@ int main()
     {
         printf("Erro ao converter para postfix.\n");
         liberaHash(tab);
+        free(RRN);
         return 1;
     }
 
@@ -88,18 +105,27 @@ int main()
     if (resultado != NULL)
     {
         printf("Resultado: Conjunto encontrado.\n");
-        value = buscaHash(tab, entrada, RRN); // Passa a palavra 'entrada' e o ponteiro 'RRN'
 
-        if (value != -1 && RRN != NULL)
+        // Laço para percorrer os termos (palavras) e buscar seus RRNs
+        for (int i = 0; i < tamanhoPostfix; i++)
         {
-            for (int j = 0; j < value; j++)
+            if (!isOperator(postfix[i])) // Se não for um operador, buscamos a palavra
             {
-                printf("RRN[%d]: %d\n", j, RRN[j]);
+                value = buscaHash(tab, RRN, postfix[i]); // Função buscaHash busca o RRN associado à palavra
+                if (value != -1 && RRN != NULL)
+                {
+                    printf("Palavra: %s - RRNs: ", postfix[i]);
+                    for (int j = 0; j < value; j++)
+                    {
+                        printf("%d ", RRN[j]); // Exibir os RRNs encontrados
+                    }
+                    printf("\n");
+                }
+                else
+                {
+                    printf("Nenhum RRN encontrado para a palavra '%s'.\n", postfix[i]);
+                }
             }
-        }
-        else
-        {
-            printf("Nenhum RRN encontrado.\n");
         }
     }
     else
@@ -114,6 +140,7 @@ int main()
     }
     free(componentes);
     liberaHash(tab);
+    free(RRN);
 
     return 0;
 }

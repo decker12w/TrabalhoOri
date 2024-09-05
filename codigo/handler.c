@@ -104,125 +104,164 @@ int precedencia(char *operacao)
     return 0;
 }
 
-// Função para converter a expressão em componentes para a forma pós-fixada
 char **converterComponentesParaPostfix(char **componentes, int tamanho, int *tamanhoPostfix)
 {
-    char **resultado = (char **)malloc(MAXTAM_PILHA * sizeof(char *));
-    char *pilha[MAXTAM_PILHA];
-    int topo = -1, indice = 0;
+    char **resultado = (char **)malloc(MAX_PILHA * sizeof(char *));
+    if (resultado == NULL)
+    {
+        return NULL;
+    }
+
+    char *pilha[MAX_PILHA];
+    int topo = -1;
+    int indice = 0;
 
     for (int i = 0; i < tamanho; i++)
     {
         char *componente = componentes[i];
 
-        // Verifica se é um operando
+        // Se não for operador, adiciona diretamente à saída
         if (!isOperator(componente) && strcmp(componente, "(") != 0 && strcmp(componente, ")") != 0)
         {
-            resultado[indice++] = componente;
+            resultado[indice] = (char *)malloc((strlen(componente) + 1) * sizeof(char));
+            strcpy(resultado[indice], componente);
+            indice++;
         }
+        // Se for um parêntese de abertura, empilha
         else if (strcmp(componente, "(") == 0)
         {
             pilha[++topo] = componente;
         }
+        // Se for um parêntese de fechamento, desempilha até o parêntese de abertura
         else if (strcmp(componente, ")") == 0)
         {
             while (topo != -1 && strcmp(pilha[topo], "(") != 0)
             {
-                resultado[indice++] = pilha[topo--];
+                resultado[indice] = (char *)malloc((strlen(pilha[topo]) + 1) * sizeof(char));
+                strcpy(resultado[indice++], pilha[topo--]);
             }
-            topo--; // Remove '('
+            topo--; // Remove o parêntese de abertura
         }
         else
         {
+            // Operador encontrado: garante a precedência correta
             while (topo != -1 && precedencia(pilha[topo]) >= precedencia(componente))
             {
-                resultado[indice++] = pilha[topo--];
+                resultado[indice] = (char *)malloc((strlen(pilha[topo]) + 1) * sizeof(char));
+                strcpy(resultado[indice++], pilha[topo--]);
             }
             pilha[++topo] = componente;
         }
     }
 
-    // Desempilha operadores restantes
+    // Esvaziar a pilha de operadores restantes
     while (topo != -1)
     {
-        resultado[indice++] = pilha[topo--];
+        resultado[indice] = (char *)malloc((strlen(pilha[topo]) + 1) * sizeof(char));
+        strcpy(resultado[indice++], pilha[topo--]);
     }
 
     *tamanhoPostfix = indice;
+
     return resultado;
 }
 
-// Função para avaliar a expressão pós-fixada
 Set *avaliarPostfix(Hash *hash, char **postfix, int quantidade)
 {
-    Set *pilha[MAXTAM_PILHA];
+    Set *pilha[MAX_PILHA];
     int topo = -1;
     int operadorNot = 0;
     int elementoNegado = -1;
 
-    // Itera pela expressão pós-fixada
     for (int i = 0; i < quantidade; i++)
     {
         if (strcmp(postfix[i], "NOT") == 0)
         {
-            // Operador NOT encontrado
+            if (elementoNegado != -1)
+            {
+                printf("Busca inválida.\n");
+                return NULL;
+            }
             operadorNot = 1;
             elementoNegado = topo;
         }
         else if (strcmp(postfix[i], "AND") == 0)
         {
-            // Operador AND
             if (topo < 1)
+            {
+                printf("Busca inválida.\n");
                 return NULL;
+            }
 
-            Set *set1 = pilha[topo--]; // Desempilha o primeiro conjunto
-            Set *set2 = pilha[topo--]; // Desempilha o segundo conjunto
+            Set *set1 = pilha[topo];
+            topo--;
+            Set *set2 = pilha[topo];
+            topo--;
 
             if (operadorNot)
             {
-                // Se o operador NOT foi aplicado, faz a interseção com o NOT
-                pilha[++topo] = NOTInterseccaoSet(set1, set2);
+                if (elementoNegado == 0)
+                {
+                    pilha[++topo] = interseccaoSetComNot(set1, set2);
+                }
+                else
+                {
+                    pilha[++topo] = interseccaoSetComNot(set2, set1);
+                }
             }
             else
             {
-                // Caso contrário, faz a interseção normal
                 pilha[++topo] = interseccaoSet(set1, set2);
             }
-            operadorNot = 0; // Reseta o estado do operador NOT
+            operadorNot = 0;
+            elementoNegado = -1;
         }
         else if (strcmp(postfix[i], "OR") == 0)
         {
-            // Operador OR
             if (topo < 1)
-                return NULL;
-
-            Set *set1 = pilha[topo--]; // Desempilha o primeiro conjunto
-            Set *set2 = pilha[topo--]; // Desempilha o segundo conjunto
-
-            // Realiza a união dos conjuntos
-            pilha[++topo] = uniaoSet(set1, set2);
-        }
-        else
-        {
-            // Se for uma palavra, faz a busca na tabela hash
-            int deuCerto;
-            Set *conjunto = buscaHash(hash, postfix[i], &deuCerto);
-
-            if (deuCerto && conjunto != NULL)
             {
-                // Empilha o conjunto resultante da busca
-                pilha[++topo] = conjunto;
+                printf("Busca inválida.\n");
+                return NULL;
+            }
+
+            Set *set1 = pilha[topo];
+            topo--;
+            Set *set2 = pilha[topo];
+            topo--;
+
+            if (operadorNot)
+            {
+                printf("Busca inválida.\n");
+                return NULL;
             }
             else
             {
-                // Palavra não encontrada, retorna NULL
-                return NULL;
+                pilha[++topo] = uniaoSet(set1, set2);
             }
+            operadorNot = 0;
+        }
+        else
+        {
+            // int deuCerto;
+            // Set *conjunto = buscaHash(hash, postfix[i], &deuCerto);
+            // if (deuCerto)
+            // {
+            //     pilha[++topo] = conjunto;
+            // }
+            // else
+            // {
+            //     pilha[++topo] = criaSet();
+            // }
         }
     }
 
-    // Retorna o conjunto resultante se houver exatamente um conjunto na pilha
-    return (topo == 0) ? pilha[topo] : NULL;
+    if (topo != 0 || tamanhoSet(pilha[topo]) == 0)
+    {
+        printf("Nenhuma postagem foi encontrada.\n");
+        return NULL;
+    }
+
+    return pilha[topo];
 }
 
 int isOperator(char *token)

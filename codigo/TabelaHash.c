@@ -57,13 +57,12 @@ int insereHash(Hash *ha, Postagem *post)
     return 0;
 }
 
-// Função para buscar uma postagem na tabela hash
-int buscaHash(Hash *ha, char *palavra, int *RRN)
+int buscaHash(Hash *ha, int *RRN, char *palavra)
 {
     if (ha == NULL)
         return -1;
     int pos = funcaoHash(palavra) % ha->TABLE_SIZE;
-    return busca_arvore(ha->ArvPosts[pos], &RRN, palavra); // Passa o endereço de RRN (int **)
+    return busca_arvore(ha->ArvPosts[pos], RRN, palavra);
 }
 
 // Função de hash baseada no algoritmo de DJB2
