@@ -57,8 +57,11 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
+    ".env*": "dotenv",
+    "stdio.h": "c",
     "optional": "c",
     "cstdlib": "cpp",
-    "arvoreaux.h": "c"
+    "arvoreaux.h": "c",
+    "arvoreavl.h": "c"
   }
 }

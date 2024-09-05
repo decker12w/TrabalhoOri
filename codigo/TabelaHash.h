@@ -10,6 +10,6 @@ Hash *criaHash(int TABLE_SIZE);
 void liberaHash(Hash *ha);
 unsigned long funcaoHash(char *str);
 int insereHash(Hash *ha, Postagem *post);
-int buscaHash(Hash *ha, int **RRN, char *palavra);
+int buscaHash(Hash *ha, char *palavra, int *RRN);
 
 #endif

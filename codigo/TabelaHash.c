@@ -1,4 +1,5 @@
 #include "TabelaHash.h"
+#include "ArvoreAux.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,12 +10,12 @@ struct hash
     ArvoreAux **ArvPosts;
 };
 
+// Função para criar uma tabela hash
 Hash *criaHash(int TABLE_SIZE)
 {
     Hash *ha = (Hash *)malloc(sizeof(Hash));
     if (ha != NULL)
     {
-        int i;
         ha->TABLE_SIZE = TABLE_SIZE;
         ha->ArvPosts = (ArvoreAux **)malloc(TABLE_SIZE * sizeof(ArvoreAux *));
         if (ha->ArvPosts == NULL)
@@ -23,18 +24,19 @@ Hash *criaHash(int TABLE_SIZE)
             return NULL;
         }
 
-        for (i = 0; i < ha->TABLE_SIZE; i++)
+        // Inicializa todas as árvores nas entradas da tabela hash
+        for (int i = 0; i < ha->TABLE_SIZE; i++)
             ha->ArvPosts[i] = criaArvore();
     }
     return ha;
 }
 
+// Função para liberar a tabela hash
 void liberaHash(Hash *ha)
 {
     if (ha != NULL)
     {
-        int i;
-        for (i = 0; i < ha->TABLE_SIZE; i++)
+        for (int i = 0; i < ha->TABLE_SIZE; i++)
         {
             if (ha->ArvPosts[i] != NULL)
                 liberaArvore(ha->ArvPosts[i]);
@@ -44,42 +46,49 @@ void liberaHash(Hash *ha)
     }
 }
 
+// Função para inserir uma postagem na tabela hash
 int insereHash(Hash *ha, Postagem *post)
 {
     if (ha == NULL || post == NULL)
         return -1;
+    // Calcula a posição na tabela hash com base na função hash
     int pos = funcaoHash(post->palavra) % ha->TABLE_SIZE;
     insere_arvore(ha->ArvPosts[pos], post->palavra, post->RRN[0]);
     return 0;
 }
 
-int buscaHash(Hash *ha, int **RRN, char *palavra)
+// Função para buscar uma postagem na tabela hash
+int buscaHash(Hash *ha, char *palavra, int *RRN)
 {
     if (ha == NULL)
         return -1;
     int pos = funcaoHash(palavra) % ha->TABLE_SIZE;
-    return busca_arvore(ha->ArvPosts[pos], RRN, palavra);
+    return busca_arvore(ha->ArvPosts[pos], &RRN, palavra); // Passa o endereço de RRN (int **)
 }
 
+// Função de hash baseada no algoritmo de DJB2
 unsigned long funcaoHash(char *str)
 {
     unsigned long hash = 5381;
     int c;
 
+    // Aplica a função hash caracter a caracter
     while ((c = *str++))
         hash = ((hash << 5) + hash) + c;
 
     return hash;
 }
 
-/* // Teste de funcionamento da árvore
+/* // Exemplo de teste
 int main()
 {
-    int *RRN1, *RRN2;
+    int RRN1, RRN2;
 
+    // Cria a tabela hash com tamanho 10
     Hash *hash = criaHash(10);
     char palavra[20];
 
+    // Insere 10 postagens de teste
     for (int i = 0; i < 10; i++)
     {
         sprintf(palavra, "teste%d", i);
@@ -87,18 +96,19 @@ int main()
         insereHash(hash, post);
     }
 
-    // Teste de funcionar
-    if (buscaHash(hash, &RRN1, "teste0") > 0)
-        printf("Encontrou vetor de rrn %d\n", RRN1[0]);
+    // Testa a busca de uma palavra presente
+    if (buscaHash(hash, "teste0", &RRN1) > 0)
+        printf("Encontrou vetor de RRN %d\n", RRN1);
     else
         printf("Não encontrou\n");
 
-    // Teste deve falhar
-    if (buscaHash(hash, &RRN2, "erro") > 0)
-        printf("Encontrou vetor de rrn %d\n", RRN2[0]);
+    // Testa a busca de uma palavra ausente
+    if (buscaHash(hash, "erro", &RRN2) > 0)
+        printf("Encontrou vetor de RRN %d\n", RRN2);
     else
         printf("Não encontrou\n");
 
+    // Libera a memória
     liberaHash(hash);
 }
  */

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "set.h"       //inclui os Prot�tipos
-#include "ArvoreAVL.h" //inclui os Prot�tipos
+#include "set.h"
+#include "ArvoreAVL.h"
 
-// Defini��o do tipo Set
+// Definição do tipo Set
 struct set
 {
     ArvAVL *arv;
@@ -41,28 +41,14 @@ void liberaSet(Set *s)
     }
 }
 
-int insereSet(Set *s, int num)
+int insereSet(Set *s, Postagem postagem)
 {
     if (s == NULL)
         return 0;
 
-    if (insere_ArvAVL(s->arv, num))
+    if (insere_ArvAVL(s->arv, postagem))
     {
         s->qtd++;
-        return 1;
-    }
-    else
-        return 0;
-}
-
-int removeSet(Set *s, int num)
-{
-    if (s == NULL)
-        return 0;
-
-    if (remove_ArvAVL(s->arv, num))
-    {
-        s->qtd--;
         return 1;
     }
     else
@@ -73,23 +59,21 @@ int tamanhoSet(Set *s)
 {
     if (s == NULL)
         return 0;
-
     return s->qtd;
 }
 
-int consultaSet(Set *s, int num)
+int consultaSet(Set *s, Postagem postagem)
 {
     if (s == NULL)
         return 0;
 
-    return consulta_ArvAVL(s->arv, num);
+    return consulta_ArvAVL(s->arv, postagem);
 }
 
 void imprimeSet(Set *s)
 {
     if (s == NULL)
         return;
-
     emOrdem_ArvAVL(s->arv);
 }
 
@@ -97,7 +81,6 @@ void beginSet(Set *s)
 {
     if (s == NULL)
         return;
-
     s->iter = NULL;
     iterator_ArvAVL(s->arv, &(s->iter));
 }
@@ -124,31 +107,32 @@ void nextSet(Set *s)
     }
 }
 
-void getItemSet(Set *s, int *num)
+void getItemSet(Set *s, Postagem *postagem)
 {
     if (s == NULL)
         return;
     if (s->iter != NULL)
-        *num = s->iter->valor;
+        *postagem = s->iter->valor;
 }
 
 Set *uniaoSet(Set *A, Set *B)
 {
     if (A == NULL || B == NULL)
         return NULL;
-    int x;
+
+    Postagem postagem;
     Set *C = criaSet();
 
     for (beginSet(A); !endSet(A); nextSet(A))
     {
-        getItemSet(A, &x);
-        insereSet(C, x);
+        getItemSet(A, &postagem);
+        insereSet(C, postagem);
     }
 
     for (beginSet(B); !endSet(B); nextSet(B))
     {
-        getItemSet(B, &x);
-        insereSet(C, x);
+        getItemSet(B, &postagem);
+        insereSet(C, postagem);
     }
 
     return C;
@@ -158,25 +142,26 @@ Set *interseccaoSet(Set *A, Set *B)
 {
     if (A == NULL || B == NULL)
         return NULL;
-    int x;
+
+    Postagem postagem;
     Set *C = criaSet();
 
     if (tamanhoSet(A) < tamanhoSet(B))
     {
         for (beginSet(A); !endSet(A); nextSet(A))
         {
-            getItemSet(A, &x);
-            if (consultaSet(B, x))
-                insereSet(C, x);
+            getItemSet(A, &postagem);
+            if (consultaSet(B, postagem))
+                insereSet(C, postagem);
         }
     }
     else
     {
         for (beginSet(B); !endSet(B); nextSet(B))
         {
-            getItemSet(B, &x);
-            if (consultaSet(A, x))
-                insereSet(C, x);
+            getItemSet(B, &postagem);
+            if (consultaSet(A, postagem))
+                insereSet(C, postagem);
         }
     }
     return C;
@@ -186,14 +171,15 @@ Set *NOTInterseccaoSet(Set *A, Set *B)
 {
     if (A == NULL || B == NULL)
         return NULL;
-    int x;
+
+    Postagem postagem;
     Set *C = criaSet();
 
-    for (beginSet(B); !endSet(B); nextSet(B))
+    for (beginSet(A); !endSet(A); nextSet(A))
     {
-        getItemSet(A, &x);
-        if (!consultaSet(B, x))
-            insereSet(C, x);
+        getItemSet(A, &postagem);
+        if (!consultaSet(B, postagem))
+            insereSet(C, postagem);
     }
 
     return C;
