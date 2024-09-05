@@ -9,7 +9,7 @@ ArvoreAux *criaArvore();
 
 void liberaNo(Postagem *no);
 void liberaArvore(ArvoreAux *raiz);
-void insere_arvore(ArvoreAux *raiz, char *palavra, int RRN);
+void insere_arvore(ArvoreAux *raiz, char *palavra, int RRN, int tamanhoLinha);
 int busca_arvore(ArvoreAux *raiz, int **RRN, char palavra[]);
 void imprimeArvore(ArvoreAux *raiz);
 

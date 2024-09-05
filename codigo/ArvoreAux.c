@@ -29,7 +29,7 @@ void liberaArvore(ArvoreAux *raiz)
     free(raiz);
 }
 
-void insere_arvore(ArvoreAux *raiz, char *palavra, int RRN)
+void insere_arvore(ArvoreAux *raiz, char *palavra, int RRN, int tamanhoLinha)
 {
     if (raiz == NULL)
     {
@@ -38,17 +38,17 @@ void insere_arvore(ArvoreAux *raiz, char *palavra, int RRN)
 
     if (*raiz == NULL)
     {
-        *raiz = criaPostagem(palavra, RRN);
+        *raiz = criaPostagem(palavra, RRN, tamanhoLinha);
     }
     else
     {
         if (strcmp(palavra, (*raiz)->palavra) < 0)
         {
-            insere_arvore(&((*raiz)->esq), palavra, RRN);
+            insere_arvore(&((*raiz)->esq), palavra, RRN, tamanhoLinha);
         }
         else if (strcmp(palavra, (*raiz)->palavra) > 0)
         {
-            insere_arvore(&((*raiz)->dir), palavra, RRN);
+            insere_arvore(&((*raiz)->dir), palavra, RRN, tamanhoLinha);
         }
         else
         {
@@ -93,14 +93,15 @@ int main()
     int *RRN1, *RRN2;
 
     ArvoreAux *raiz = criaArvore();
-    insere_arvore(raiz, "teste", 1);
-    insere_arvore(raiz, "teste", 2);
-    insere_arvore(raiz, "teste", 3);
-    insere_arvore(raiz, "teste2", 3);
+    insere_arvore(raiz, "teste", 1, 1);
+    insere_arvore(raiz, "teste", 2, 1);
+    insere_arvore(raiz, "teste", 3, 1);
+    insere_arvore(raiz, "teste2", 3, 1);
 
     // Teste de funcionar
     if (busca_arvore(raiz, &RRN1, "teste") > 0)
-        printf("Encontrou vetor de rrn %d\n", RRN1[1]);
+        for (int i = 0; i < 3; i++)
+            printf("Encontrou vetor de rrn %d\n", RRN1[i]);
     else
         printf("Não encontrou\n");
 
