@@ -10,19 +10,22 @@ int main()
     Palavra palavra1 = {"apple", criaSet()};
     Palavra palavra2 = {"banana", criaSet()};
     Palavra palavra3 = {"cherry", criaSet()};
+    Palavra palavra4 = {"apple", criaSet()};
 
     Postagem post1 = {1, 10}; // Exemplo de postagem 1
     Postagem post2 = {2, 15}; // Exemplo de postagem 2
     Postagem post3 = {3, 20}; // Exemplo de postagem 3
+    Postagem post4 = {5, 20}; // Exemplo de postagem 3
 
     // Inserir palavras com postagens
     insereArvAux(arvore, palavra1, post1);
     insereArvAux(arvore, palavra2, post2);
     insereArvAux(arvore, palavra3, post3);
+    insereArvAux(arvore, palavra4, post4);
 
     // Realizar busca por uma palavra
     Palavra palavraBuscada;
-    char palavraChave[] = "banana";
+    char palavraChave[] = "apple";
     if (busca_arvore(arvore, &palavraBuscada, palavraChave) == 0)
     {
         printf("Palavra '%s' encontrada!\n", palavraChave);
@@ -32,7 +35,7 @@ int main()
         printf("Palavra '%s' não encontrada.\n", palavraChave);
     }
 
-    // Liberar a árvore
+       // Liberar a árvore
     liberaArvAux(arvore);
 
     return 0;
