@@ -12,4 +12,8 @@ unsigned long funcaoHash(char *str);
 int insereHash(Hash *ha, Postagem *post);
 int buscaHash(Hash *ha, int **RRN, char *palavra);
 
+// Add declarations for valorString and chaveDivisao
+int valorString(char *str);
+int chaveDivisao(int chave, int tamanhoHash);
+
 #endif

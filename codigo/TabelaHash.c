@@ -48,7 +48,8 @@ int insereHash(Hash *ha, Postagem *post)
 {
     if (ha == NULL || post == NULL)
         return -1;
-    int pos = funcaoHash(post->palavra) % ha->TABLE_SIZE;
+    int chave = valorString(post->palavra);
+    int pos = chaveDivisao(chave, ha->TABLE_SIZE);
     insere_arvore(ha->ArvPosts[pos], post->palavra, post->RRN[0], post->tamanhoLinha);
     return 0;
 }
@@ -57,19 +58,29 @@ int buscaHash(Hash *ha, int **RRN, char *palavra)
 {
     if (ha == NULL)
         return -1;
-    int pos = funcaoHash(palavra) % ha->TABLE_SIZE;
+
+    int chave = valorString(palavra);
+    int pos = chaveDivisao(chave, ha->TABLE_SIZE);
+
     return busca_arvore(ha->ArvPosts[pos], RRN, palavra);
 }
 
-unsigned long funcaoHash(char *str)
+int valorString(char *str)
 {
-    unsigned long hash = 5381;
-    int c;
+    int i, valor = 7;
+    int tam = strlen(str);
 
-    while ((c = *str++))
-        hash = ((hash << 5) + hash) + c;
+    for (i = 0; i < tam; i++)
+    {
+        valor = 31 * valor + (int)str[i];
+    }
 
-    return hash;
+    return (valor & 0x7FFFFFFF);
+}
+
+int chaveDivisao(int chave, int tamanhoHash)
+{
+    return (chave & 0x7FFFFFFF) % tamanhoHash;
 }
 
 /* // Teste de funcionamento da árvore

@@ -172,10 +172,10 @@ void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra)
         printf("Não encontrou\n");
 }
 
-/* int main()
+int main()
 {
     Hash *tab = criaHash(10003);
     if (lerArquivo("corpus.csv", tab) == -1)
         printf("Erro ao ler arquivo\n");
     BuscarPalavra("corpus.csv", tab, "omg");
-} */
+}
