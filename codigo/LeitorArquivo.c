@@ -11,26 +11,20 @@ void removeEspaco(char *str)
     char *start = str;
     char *end;
 
-    // Avança o ponteiro até o primeiro caractere que não seja espaço
     while (isspace((unsigned char)*start))
         start++;
 
-    // Se a string for toda de espaços, retorna uma string vazia
     if (*start == 0)
     {
         *str = 0;
         return;
     }
 
-    // Encontra o final da string
     end = start + strlen(start) - 1;
     while (end > start && isspace((unsigned char)*end))
         end--;
 
-    // Coloca o null terminator após o último caractere não-espacial
     *(end + 1) = 0;
-
-    // Move a string para o início do buffer, se necessário
     memmove(str, start, end - start + 2);
 }
 
@@ -40,28 +34,23 @@ void removePontuacao(char *str)
     char *start = str;
     char *end;
 
-    // Avança o ponteiro até o primeiro caractere que não seja pontuação
     while (*start && ispunct((unsigned char)*start))
     {
         start++;
     }
 
-    // Se a string for toda de pontuações, retorna uma string vazia
     if (*start == 0)
     {
         *str = 0;
         return;
     }
 
-    // Encontra o final da string
     end = start + strlen(start) - 1;
     while (end > start && ispunct((unsigned char)*end))
         end--;
 
-    // Coloca o null terminator após o último caractere não-pontuação
     *(end + 1) = 0;
 
-    // Move a string para o início do buffer, se necessário
     if (start != str)
     {
         memmove(str, start, end - start + 2);
@@ -90,10 +79,11 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
     size_t len = 0;
     ssize_t read;
 
+    Postagem post;
     while ((read = getline(&line, &len, file)) != -1)
     {
-        int tamanhoLinha = strlen(line);
-        int rrn = ftell(file) - tamanhoLinha;
+        post.tamanhoLinha = strlen(line);
+        post.rrn = ftell(file) - post.tamanhoLinha;
 
         line[strcspn(line, "\n")] = '\0';
 
@@ -107,11 +97,8 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
         palavra = strtok(texto, " ");
         while (palavra != NULL)
         {
-            Postagem *post = criaPostagem(palavra, rrn, tamanhoLinha);
-            if (post == NULL || insereHash(hash, post) != 0)
-            {
-                printf("Erro ao inserir postagem %s\n", texto);
-            }
+            if ((insereHash(hash, palavra, post)) == -1)
+                printf("Erro ao inserir palavra %s\n", palavra);
             palavra = strtok(NULL, " ");
         }
     }
@@ -121,61 +108,60 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
     return 0;
 }
 
-int BuscarPeloRRN(char *nomeArquivo, int rrn[], int tamanhoVetor)
-{
-    FILE *arquivo = fopen(nomeArquivo, "r");
-    if (arquivo == NULL)
-    {
-        printf("Erro ao abrir o arquivo.\n");
-        return -1;
-    }
-
-    char *linha = NULL;
-    size_t tamanho = 0;
-    ssize_t lido;
-
-    for (int i = 0; i < tamanhoVetor; i++)
-    {
-        // Usa fseek para pular para a posição do RRN
-        fseek(arquivo, rrn[i], SEEK_SET);
-
-        // Lê a linha na posição do RRN
-        lido = getline(&linha, &tamanho, arquivo);
-        if (lido != -1)
-        {
-            // Processa a linha
-            char *docID_str = strtok(linha, ",");
-            char *opiniao = strtok(NULL, ",");
-            char *texto = strtok(NULL, "\n");
-
-            texto = tratadorTexto(texto);
-
-            printf("Frase encontrada: %s\n", texto);
-        }
-        // Importante: Não feche o arquivo ou libere a linha aqui, pois isso será feito após o loop
-    }
-
-    // Libera a linha e fecha o arquivo após o loop
-    free(linha);
-    fclose(arquivo);
-
-    return 0;
-}
-
 void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra)
 {
-    int *RRN = NULL;
-    int tamanhoVetor;
-    if ((tamanhoVetor = buscaHash(hash, &RRN, palavra)) != -1)
-        BuscarPeloRRN(nomeArquivo, RRN, tamanhoVetor);
-    else
-        printf("Não encontrou\n");
+    FILE *arquivoTweets = fopen(nomeArquivo, "r");
+    if (arquivoTweets == NULL)
+    {
+        perror("Erro ao abrir o arquivo para leitura.");
+        return;
+    }
+
+    int ok;
+    Set *resultado = buscaHash(hash, palavra, &ok);
+
+    if (ok == -1)
+    {
+        printf("Palavra '%s' não encontrada\n", palavra);
+        fclose(arquivoTweets);
+        return;
+    }
+
+    printf("Resultados para a palavra '%s':\n", palavra);
+
+    if (resultado == NULL || endSet(resultado))
+    {
+        printf("O Set está vazio, não há postagens associadas à palavra '%s'.\n", palavra);
+    }
+    // Se o conjunto de resultados estiver correto, iteramos e imprimimos as ocorrências
+    for (beginSet(resultado); !endSet(resultado); nextSet(resultado))
+    {
+        char *linhaSaida = NULL;
+        size_t len = 0;
+        Postagem postagemSaida;
+
+        getItemSet(resultado, &postagemSaida);
+        fseek(arquivoTweets, postagemSaida.rrn, SEEK_SET);
+
+        // Usar getline para ler a linha completa a partir do RRN
+        if (getline(&linhaSaida, &len, arquivoTweets) != -1)
+        {
+            printf("Linha no arquivo (RRN %d): %s\n", postagemSaida.rrn, linhaSaida);
+        }
+        free(linhaSaida); // Libera a memória alocada pelo getline
+    }
+
+    fclose(arquivoTweets);
 }
 
 int main()
 {
     Hash *tab = criaHash(10003);
-    if (lerArquivo("corpus.csv", tab) == -1)
+    if (lerArquivo("corpusTeste.csv", tab) == -1)
         printf("Erro ao ler arquivo\n");
-    BuscarPalavra("corpus.csv", tab, "omg");
+
+    // Exemplo de busca de uma palavra
+    BuscarPalavra("corpusTeste.csv", tab, "omg");
+
+    return 0;
 }

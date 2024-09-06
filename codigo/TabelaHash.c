@@ -2,67 +2,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ArvoreAux.h"
 
 struct hash
 {
     int TABLE_SIZE;
-    ArvoreAux **ArvPosts;
+    ArvAux **ArvPalavras;
 };
 
-Hash *criaHash(int TABLE_SIZE)
+int insereHash(Hash *ha, char *palavraInserir, Postagem post)
 {
-    Hash *ha = (Hash *)malloc(sizeof(Hash));
-    if (ha != NULL)
-    {
-        int i;
-        ha->TABLE_SIZE = TABLE_SIZE;
-        ha->ArvPosts = (ArvoreAux **)malloc(TABLE_SIZE * sizeof(ArvoreAux *));
-        if (ha->ArvPosts == NULL)
-        {
-            free(ha);
-            return NULL;
-        }
-
-        for (i = 0; i < ha->TABLE_SIZE; i++)
-            ha->ArvPosts[i] = criaArvore();
-    }
-    return ha;
-}
-
-void liberaHash(Hash *ha)
-{
-    if (ha != NULL)
-    {
-        int i;
-        for (i = 0; i < ha->TABLE_SIZE; i++)
-        {
-            if (ha->ArvPosts[i] != NULL)
-                liberaArvore(ha->ArvPosts[i]);
-        }
-        free(ha->ArvPosts);
-        free(ha);
-    }
-}
-
-int insereHash(Hash *ha, Postagem *post)
-{
-    if (ha == NULL || post == NULL)
+    if (ha == NULL || ha->ArvPalavras == NULL)
         return -1;
-    int chave = valorString(post->palavra);
+
+    int chave = valorString(palavraInserir);
     int pos = chaveDivisao(chave, ha->TABLE_SIZE);
-    insere_arvore(ha->ArvPosts[pos], post->palavra, post->RRN[0], post->tamanhoLinha);
+
+    Palavra palavra;
+    palavra.valor = (char *)malloc((strlen(palavraInserir) + 1) * sizeof(char));
+    if (palavra.valor == NULL)
+        return -1;
+    strcpy(palavra.valor, palavraInserir);
+
+    insereArvAux(ha->ArvPalavras[pos], palavra, post);
     return 0;
 }
 
-int buscaHash(Hash *ha, int **RRN, char *palavra)
+Set *buscaHash(Hash *ha, char *palavraBusca, int *ok)
 {
-    if (ha == NULL)
-        return -1;
+    *ok = 0; // Inicialmente, assume-se que a busca falhou
+    if (ha == NULL || ha->ArvPalavras == NULL)
+    {
+        return NULL;
+    }
 
-    int chave = valorString(palavra);
+    int chave = valorString(palavraBusca);
     int pos = chaveDivisao(chave, ha->TABLE_SIZE);
+    Palavra palavra;
 
-    return busca_arvore(ha->ArvPosts[pos], RRN, palavra);
+    // Se a busca na árvore retornar sucesso, então ajusta 'ok' para 1
+    if (busca_arvore(ha->ArvPalavras[pos], &palavra, palavraBusca))
+    {
+        *ok = 1;
+        return palavra.postagens;
+    }
+
+    // Se a busca falhar, 'ok' permanece 0 e NULL é retornado
+    return NULL;
 }
 
 int valorString(char *str)
@@ -83,33 +69,37 @@ int chaveDivisao(int chave, int tamanhoHash)
     return (chave & 0x7FFFFFFF) % tamanhoHash;
 }
 
-/* // Teste de funcionamento da árvore
-int main()
+Hash *criaHash(int TABLE_SIZE)
 {
-    int *RRN1, *RRN2;
-
-    Hash *hash = criaHash(10);
-    char palavra[20];
-
-    for (int i = 0; i < 10; i++)
+    Hash *ha = (Hash *)malloc(sizeof(Hash));
+    if (ha != NULL)
     {
-        sprintf(palavra, "teste%d", i);
-        Postagem *post = criaPostagem(palavra, i, i);
-        insereHash(hash, post);
+        int i;
+        ha->TABLE_SIZE = TABLE_SIZE;
+        ha->ArvPalavras = (ArvAux **)malloc(TABLE_SIZE * sizeof(ArvAux *));
+        if (ha->ArvPalavras == NULL)
+        {
+            free(ha);
+            return NULL;
+        }
+
+        for (i = 0; i < ha->TABLE_SIZE; i++)
+            ha->ArvPalavras[i] = criaArvAux();
     }
-
-    // Teste de funcionar
-    if (buscaHash(hash, &RRN1, "teste0") > 0)
-        printf("Encontrou vetor de rrn %d\n", RRN1[0]);
-    else
-        printf("Não encontrou\n");
-
-    // Teste deve falhar
-    if (buscaHash(hash, &RRN2, "erro") > 0)
-        printf("Encontrou vetor de rrn %d\n", RRN2[0]);
-    else
-        printf("Não encontrou\n");
-
-    liberaHash(hash);
+    return ha;
 }
- */
+
+void liberaHash(Hash *ha)
+{
+    if (ha != NULL)
+    {
+        int i;
+        for (i = 0; i < ha->TABLE_SIZE; i++)
+        {
+            if (ha->ArvPalavras[i] != NULL)
+                liberaArvAux(ha->ArvPalavras[i]);
+        }
+        free(ha->ArvPalavras);
+        free(ha);
+    }
+}

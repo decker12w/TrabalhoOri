@@ -1,207 +1,208 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "ArvoreAux.h"
+#include <string.h>
 
-ArvoreAux *criaArvore()
+struct No
 {
-    ArvoreAux *raiz = (ArvoreAux *)malloc(sizeof(ArvoreAux));
+    Palavra info;
+    int altura;
+    struct No *esq;
+    struct No *dir;
+};
+
+ArvAux *criaArvAux()
+{
+    ArvAux *raiz = (ArvAux *)malloc(sizeof(ArvAux));
     if (raiz != NULL)
+    {
         *raiz = NULL;
+    }
+
     return raiz;
 }
 
-void liberaNo(Postagem *no)
+void liberaNoAVLAUX(struct No *no)
 {
     if (no == NULL)
+    {
         return;
-    liberaNo(no->esq);
-    liberaNo(no->dir);
-    free(no->RRN); // Free the RRN array
+    }
+
+    liberaNoAVLAUX(no->esq);
+    liberaNoAVLAUX(no->dir);
     free(no);
+    no = NULL;
 }
 
-void liberaArvore(ArvoreAux *raiz)
+void liberaArvAux(ArvAux *raiz)
 {
     if (raiz == NULL)
+    {
         return;
-    liberaNo(*raiz);
+    }
+
+    liberaNoAVLAUX(*raiz);
     free(raiz);
 }
 
-// Função para retornar o maior valor entre dois inteiros
-int maior(int a, int b)
+int alturaNoAUX(struct No *no)
 {
-    return (a > b) ? a : b;
-}
-
-// Função para calcular a altura de uma postagem
-int altura_Post(struct Postagem *post)
-{
-    if (post == NULL)
-        return -1;
-    else
-        return post->altura;
-}
-
-// Função para calcular o fator de balanço de um nó
-int fator_balanco(Postagem *Post)
-{
-    if (Post == NULL)
+    if (no == NULL)
     {
+        return -1;
+    }
+
+    return no->altura;
+}
+
+int fatorBalanceamentoNoAUX(struct No *no)
+{
+    return labs(alturaNoAUX(no->esq) - alturaNoAUX(no->dir));
+}
+
+int maiorAUX(int x, int y)
+{
+    if (x > y)
+    {
+        return x;
+    }
+
+    return y;
+}
+
+int busca_arvore(ArvAux *raiz, Palavra *palavra, char *palavraBusca)
+{
+    if (raiz == NULL || *raiz == NULL)
+        return -1;
+
+    if (strcmp(palavraBusca, (*raiz)->info.valor) < 0)
+    {
+        return busca_arvore(&((*raiz)->esq), palavra, palavraBusca);
+    }
+    else if (strcmp(palavraBusca, (*raiz)->info.valor) > 0)
+    {
+        return busca_arvore(&((*raiz)->dir), palavra, palavraBusca);
+    }
+    else
+    {
+        *palavra = (*raiz)->info;
         return 0;
     }
-    return altura_Post(Post->esq) - altura_Post(Post->dir);
 }
 
-// Funções de rotação para balanceamento da árvore
-void RotacaoLL(ArvoreAux *A)
+void rotacaoLLAUX(ArvAux *A)
 {
-    Postagem *B = (*A)->esq;
+    struct No *B;
+    B = (*A)->esq;
     (*A)->esq = B->dir;
     B->dir = *A;
-    (*A)->altura = maior(altura_Post((*A)->esq), altura_Post((*A)->dir)) + 1;
-    B->altura = maior(altura_Post(B->esq), (*A)->altura) + 1;
+    (*A)->altura = maiorAUX(alturaNoAUX((*A)->esq), alturaNoAUX((*A)->dir)) + 1;
+    B->altura = maiorAUX(alturaNoAUX(B->esq), (*A)->altura) + 1;
     *A = B;
 }
 
-void RotacaoRR(ArvoreAux *A)
+void rotacaoRRAUX(ArvAux *A)
 {
-    Postagem *B = (*A)->dir;
+    struct No *B;
+    B = (*A)->dir;
     (*A)->dir = B->esq;
-    B->esq = *A;
-    (*A)->altura = maior(altura_Post((*A)->esq), altura_Post((*A)->dir)) + 1;
-    B->altura = maior(altura_Post(B->dir), (*A)->altura) + 1;
-    *A = B;
+    B->esq = (*A);
+    (*A)->altura = maiorAUX(alturaNoAUX((*A)->esq), alturaNoAUX((*A)->dir)) + 1;
+    B->altura = maiorAUX(alturaNoAUX(B->dir), (*A)->altura) + 1;
+    (*A) = B;
 }
 
-void RotacaoLR(ArvoreAux *A)
+void rotacaoLRAUX(ArvAux *A)
 {
-    RotacaoRR(&(*A)->esq);
-    RotacaoLL(A);
+    rotacaoRRAUX(&(*A)->esq);
+    rotacaoLLAUX(A);
 }
 
-void RotacaoRL(ArvoreAux *A)
+void rotacaoRLAUX(ArvAux *A)
 {
-    RotacaoLL(&(*A)->dir);
-    RotacaoRR(A);
+    rotacaoLLAUX(&(*A)->dir);
+    rotacaoRRAUX(A);
 }
 
-int insere_arvore(ArvoreAux *raiz, char *palavra, int RRN, int tamanhoLinha)
+int insereArvAux(ArvAux *raiz, Palavra valor, Postagem post)
 {
-    if (raiz == NULL)
-    {
-        return 0;
-    }
-
     if (*raiz == NULL)
     {
-        *raiz = criaPostagem(palavra, RRN, tamanhoLinha);
+        // Se a árvore estiver vazia, cria um novo nó com a palavra e o set
+        struct No *novo = (struct No *)malloc(sizeof(struct No));
+        if (novo == NULL)
+        {
+            return 0; // Falha ao alocar memória
+        }
+
+        // Inicializa a palavra e o set
+        novo->info = valor;
+        novo->info.postagens = criaSet();      // Cria um novo set para as postagens
+        insereSet(novo->info.postagens, post); // Adiciona a postagem ao set
+
+        novo->altura = 0;
+        novo->esq = NULL;
+        novo->dir = NULL;
+        *raiz = novo;
+
         return 1;
     }
 
-    Postagem *atual = *raiz;
-
-    if (strcmp(palavra, atual->palavra) < 0)
+    struct No *atual = *raiz;
+    if (strcmp(valor.valor, atual->info.valor) < 0)
     {
-        insere_arvore(&(atual->esq), palavra, RRN, tamanhoLinha);
-
-        // Verificar se precisa balancear a árvore
-        if (fator_balanco(atual) >= 2)
+        if (insereArvAux(&(atual->esq), valor, post))
         {
-            if (strcmp(palavra, atual->esq->palavra) < 0)
+            if (fatorBalanceamentoNoAUX(atual) >= 2)
             {
-                RotacaoLL(raiz); // Rotação simples à direita
-            }
-            else
-            {
-                RotacaoLR(raiz); // Rotação esquerda-direita
+                if (strcmp(valor.valor, (*raiz)->esq->info.valor) < 0)
+                {
+                    rotacaoLLAUX(raiz);
+                }
+                else
+                {
+                    rotacaoLRAUX(raiz);
+                }
             }
         }
     }
-    else if (strcmp(palavra, atual->palavra) > 0)
+    else if (strcmp(valor.valor, atual->info.valor) > 0)
     {
-        insere_arvore(&(atual->dir), palavra, RRN, tamanhoLinha);
-
-        // Verificar se precisa balancear a árvore
-        if (fator_balanco(atual) <= -2)
+        if (insereArvAux(&(atual->dir), valor, post))
         {
-            if (strcmp(palavra, atual->dir->palavra) > 0)
+            if (fatorBalanceamentoNoAUX(atual) >= 2)
             {
-                RotacaoRR(raiz); // Rotação simples à esquerda
-            }
-            else
-            {
-                RotacaoRL(raiz); // Rotação direita-esquerda
+                if (strcmp(valor.valor, (*raiz)->dir->info.valor) > 0)
+                {
+                    rotacaoRRAUX(raiz);
+                }
+                else
+                {
+                    rotacaoRLAUX(raiz);
+                }
             }
         }
     }
     else
     {
-        // Palavra já existe, adiciona o RRN ao vetor
-        atual->RRN = realloc(atual->RRN, (++atual->quantPalavras) * sizeof(int));
-        atual->RRN[atual->quantPalavras - 1] = RRN;
-        return 0;
+
+        insereSet(atual->info.postagens, post);
     }
 
-    // Atualizar a altura do nó após a inserção
-    atual->altura = maior(altura_Post(atual->esq), altura_Post(atual->dir)) + 1;
-
+    atual->altura = maiorAUX(alturaNoAUX(atual->esq), alturaNoAUX(atual->dir)) + 1;
     return 1;
 }
 
-int busca_arvore(ArvoreAux *raiz, int **RRN, char palavra[])
+struct No *procuraMenorAUX(struct No *atual)
 {
-    if (raiz == NULL || *raiz == NULL)
-        return -1;
+    struct No *no1 = atual;
+    struct No *no2 = atual->esq;
+    while (no2 != NULL)
+    {
+        no1 = no2;
+        no2 = no2->esq;
+    }
 
-    if (strcmp(palavra, (*raiz)->palavra) < 0)
-    {
-        return busca_arvore(&((*raiz)->esq), RRN, palavra);
-    }
-    else if (strcmp(palavra, (*raiz)->palavra) > 0)
-    {
-        return busca_arvore(&((*raiz)->dir), RRN, palavra);
-    }
-    else
-    {
-        *RRN = (*raiz)->RRN;
-        return (*raiz)->quantPalavras;
-    }
+    return no1;
 }
-
-void imprimeArvore(ArvoreAux *raiz)
-{
-    if (raiz == NULL || *raiz == NULL)
-        return;
-    imprimeArvore(&((*raiz)->esq));
-    printf("%s\n", (*raiz)->palavra);
-    imprimeArvore(&((*raiz)->dir));
-}
-
-/* // Teste de funcionamento da árvore
-int main()
-{
-    int *RRN1, *RRN2;
-
-    ArvoreAux *raiz = criaArvore();
-    insere_arvore(raiz, "teste", 1, 1);
-    insere_arvore(raiz, "teste", 2, 1);
-    insere_arvore(raiz, "teste", 3, 1);
-    insere_arvore(raiz, "teste2", 3, 1);
-
-    // Teste de funcionar
-    if (busca_arvore(raiz, &RRN1, "teste") > 0)
-        printf("Encontrou vetor de rrn %d\n", RRN1[1]);
-    else
-        printf("Não encontrou\n");
-
-    // Teste deve falhar
-    if (busca_arvore(raiz, &RRN2, "erro") > 0)
-        printf("Encontrou vetor de rrn %d\n", RRN2[0]);
-    else
-        printf("Não encontrou\n");
-
-    imprimeArvore(raiz);
-    liberaArvore(raiz);
-} */

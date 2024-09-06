@@ -7,6 +7,6 @@ void removePontuacao(char *text);
 void removeEspaco(char *text);
 char *tratadorTexto(char *text);
 int lerArquivo(char *nomeArquivo, Hash *hash);
-int BuscarPeloRRN(char *nomeArquivo, int rrn[], int tamanhoVetor);
+void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra);
 
 #endif

@@ -8,11 +8,8 @@ typedef struct hash Hash;
 
 Hash *criaHash(int TABLE_SIZE);
 void liberaHash(Hash *ha);
-unsigned long funcaoHash(char *str);
-int insereHash(Hash *ha, Postagem *post);
-int buscaHash(Hash *ha, int **RRN, char *palavra);
-
-// Add declarations for valorString and chaveDivisao
+Set *buscaHash(Hash *ha, char *palavra, int *deuCerto);
+int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem);
 int valorString(char *str);
 int chaveDivisao(int chave, int tamanhoHash);
 
