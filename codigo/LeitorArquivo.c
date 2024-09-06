@@ -57,6 +57,7 @@ void removePontuacao(char *str)
     }
 }
 
+// Função que trata o texto removendo espaços e pontuações
 char *tratadorTexto(char *text)
 {
     removeEspaco(text);
@@ -65,6 +66,7 @@ char *tratadorTexto(char *text)
     return text;
 }
 
+// Função para ler o arquivo e inserir as postagens na hash
 int lerArquivo(char *nomeArquivo, Hash *hash)
 {
     printf("Lendo arquivo %s\n", nomeArquivo);
@@ -108,6 +110,7 @@ int lerArquivo(char *nomeArquivo, Hash *hash)
     return 0;
 }
 
+// Função para buscar uma palavra na hash e imprimir o texto tratado
 void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra)
 {
     FILE *arquivoTweets = fopen(nomeArquivo, "r");
@@ -129,10 +132,6 @@ void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra)
 
     printf("Resultados para a palavra '%s':\n", palavra);
 
-    if (resultado == NULL || endSet(resultado))
-    {
-        printf("O Set está vazio, não há postagens associadas à palavra '%s'.\n", palavra);
-    }
     // Se o conjunto de resultados estiver correto, iteramos e imprimimos as ocorrências
     for (beginSet(resultado); !endSet(resultado); nextSet(resultado))
     {
@@ -146,7 +145,12 @@ void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra)
         // Usar getline para ler a linha completa a partir do RRN
         if (getline(&linhaSaida, &len, arquivoTweets) != -1)
         {
-            printf("Linha no arquivo (RRN %d): %s\n", postagemSaida.rrn, linhaSaida);
+            char *texto = strtok(linhaSaida, ","); // pula docID
+            texto = strtok(NULL, ",");             // pula opiniao
+            texto = strtok(NULL, ",");             // pega o texto
+
+            texto = tratadorTexto(texto); // trata o texto
+            printf("Texto tratado: %s\n", texto);
         }
         free(linhaSaida); // Libera a memória alocada pelo getline
     }
@@ -154,6 +158,7 @@ void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra)
     fclose(arquivoTweets);
 }
 
+// Função principal para testar o código
 int main()
 {
     Hash *tab = criaHash(10003);
