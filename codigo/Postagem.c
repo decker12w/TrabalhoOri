@@ -34,6 +34,7 @@ Postagem *criaPostagem(char *palavra, int RRN, int tamanhoLinha)
 
     post->esq = NULL;
     post->dir = NULL;
+    post->altura = 0;
     post->RRN[0] = RRN;
 
     return post;

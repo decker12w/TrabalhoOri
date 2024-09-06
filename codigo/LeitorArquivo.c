@@ -167,18 +167,15 @@ void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra)
     int *RRN = NULL;
     int tamanhoVetor;
     if ((tamanhoVetor = buscaHash(hash, &RRN, palavra)) != -1)
-    {
-        printf("Encontrou %d ocorrências da palavra %s\n", tamanhoVetor, palavra);
         BuscarPeloRRN(nomeArquivo, RRN, tamanhoVetor);
-    }
     else
         printf("Não encontrou\n");
 }
 
-int main()
+/* int main()
 {
-    Hash *tab = criaHash(10017);
-    if (lerArquivo("corpusTeste.csv", tab) == -1)
+    Hash *tab = criaHash(10003);
+    if (lerArquivo("corpus.csv", tab) == -1)
         printf("Erro ao ler arquivo\n");
-    BuscarPalavra("corpusTeste.csv", tab, "jose");
-}
+    BuscarPalavra("corpus.csv", tab, "omg");
+} */

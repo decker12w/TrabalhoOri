@@ -55,7 +55,7 @@ int fator_balanco(Postagem *Post)
 }
 
 // Funções de rotação para balanceamento da árvore
-void RotacaoLL(Postagem **A)
+void RotacaoLL(ArvoreAux *A)
 {
     Postagem *B = (*A)->esq;
     (*A)->esq = B->dir;
@@ -65,7 +65,7 @@ void RotacaoLL(Postagem **A)
     *A = B;
 }
 
-void RotacaoRR(Postagem **A)
+void RotacaoRR(ArvoreAux *A)
 {
     Postagem *B = (*A)->dir;
     (*A)->dir = B->esq;
@@ -75,13 +75,13 @@ void RotacaoRR(Postagem **A)
     *A = B;
 }
 
-void RotacaoLR(Postagem **A)
+void RotacaoLR(ArvoreAux *A)
 {
     RotacaoRR(&(*A)->esq);
     RotacaoLL(A);
 }
 
-void RotacaoRL(Postagem **A)
+void RotacaoRL(ArvoreAux *A)
 {
     RotacaoLL(&(*A)->dir);
     RotacaoRR(A);
