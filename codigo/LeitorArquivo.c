@@ -158,7 +158,7 @@ void BuscarPalavra(char *nomeArquivo, Hash *hash, char *palavra)
     fclose(arquivoTweets);
 }
 
-// Função principal para testar o código
+/* // Função principal para testar o código
 int main()
 {
     Hash *tab = criaHash(10003);
@@ -170,3 +170,4 @@ int main()
 
     return 0;
 }
+ */
