@@ -39,7 +39,7 @@ int main()
             break; // termina o programa
         }
 
-        printf("Pesquise os elementos do arquivo usando (AND, OR, NOT): ");
+        printf("Pesquise os elementos do arquivo usando (AND, OR, NOT): \n");
         scanf(" %[^\n]", busca);
 
         int numComponentes;
@@ -84,6 +84,7 @@ int main()
             continue;
         }
 
+        printf("Frases relacionadas:\n\n");
         for (beginSet(resultado); !endSet(resultado); nextSet(resultado))
         {
             char linhaSaida[MAX_LINHA];
@@ -92,7 +93,7 @@ int main()
             getItemSet(resultado, &postagemSaida);
             fseek(arquivoTweets, postagemSaida.rrn, SEEK_SET);
             fgets(linhaSaida, postagemSaida.tamanhoLinha, arquivoTweets);
-            printf("%s\n", linhaSaida);
+            printf("\n%s", linhaSaida);
         }
 
         for (int i = 0; i < numComponentes; i++)
