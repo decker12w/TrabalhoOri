@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "LeitorArquivo.h"
-#include "utilitario.h"
+#include "handler.h"
 
 #define MAX_LINHA 1000
 #define MAX_BUSCA 300
@@ -25,7 +25,7 @@ int main()
     char busca[MAX_BUSCA];
     while (1)
     {
-        printf("(1) Buscar nova palavra\n(2) Sair da busca\nOpção: ");
+        printf("1-  Busca no banco de dados\n2-  Sair da busca\nOpção: ");
         scanf("%d", &escolha);
 
         if (!(escolha == 1 || escolha == 2))
@@ -36,14 +36,14 @@ int main()
 
         if (escolha == 2)
         {
-            break;
+            break; // termina o programa
         }
 
-        printf("Formule a sua busca utilizando operadores lógicos (AND, OR, NOT): ");
+        printf("Pesquise os elementos do arquivo usando (AND, OR, NOT): ");
         scanf(" %[^\n]", busca);
 
         int numComponentes;
-        char **componentes = separarBuscaEmComponentes(busca, &numComponentes);
+        char **componentes = Componente(busca, &numComponentes);
 
         if (componentes == NULL || numComponentes == 0)
         {
@@ -52,7 +52,7 @@ int main()
         }
 
         int tamanhoPostfix, tipoErro;
-        char **postfix = converterComponentesParaPostfix(componentes, numComponentes, &tamanhoPostfix);
+        char **postfix = converterParaPostfix(componentes, numComponentes, &tamanhoPostfix);
 
         if (postfix == NULL)
         {
