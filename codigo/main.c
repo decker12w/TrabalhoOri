@@ -12,14 +12,14 @@ int main()
 {
     Hash *hash = criaHash(10007);
 
-    FILE *arquivoTweets = fopen("corpusTeste.csv", "r");
+    FILE *arquivoTweets = fopen("corpus.csv", "r");
     if (arquivoTweets == NULL)
     {
         printf("Erro ao abrir arquivo de tweets.");
         exit(1);
     }
 
-    lerArquivo("corpusTeste.csv", hash);
+    lerArquivo("corpus.csv", hash);
 
     int escolha;
     char busca[MAX_BUSCA];
@@ -86,27 +86,28 @@ int main()
 
         for (beginSet(resultado); !endSet(resultado); nextSet(resultado))
         {
-            char *linhaSaida = NULL;
-            size_t len = 0;
+            char linhaSaida[MAX_LINHA];
             Postagem postagemSaida;
 
             getItemSet(resultado, &postagemSaida);
             fseek(arquivoTweets, postagemSaida.rrn, SEEK_SET);
-
-            // Usar getline para ler a linha completa a partir do RRN
-            if (getline(&linhaSaida, &len, arquivoTweets) != -1)
-            {
-                char *texto = strtok(linhaSaida, ","); // pula docID
-                texto = strtok(NULL, ",");             // pula opiniao
-                texto = strtok(NULL, ",");             // pega o texto
-
-                texto = tratadorTexto(texto); // trata o texto
-                printf("Texto tratado: %s\n", texto);
-            }
-            free(linhaSaida); // Libera a memória alocada pelo getline
+            fgets(linhaSaida, postagemSaida.tamanhoLinha, arquivoTweets);
+            printf("%s\n", linhaSaida);
         }
 
-        fclose(arquivoTweets);
+        for (int i = 0; i < numComponentes; i++)
+        {
+            free(componentes[i]);
+        }
+
+        free(componentes);
+        free(postfix);
+
+        printf("\n");
     }
+
+    liberaHash(hash);
+    fclose(arquivoTweets);
+
     return 0;
 }
