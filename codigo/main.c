@@ -108,6 +108,5 @@ int main()
 
     liberaHash(hash);
     fclose(arquivoTweets);
-
     return 0;
 }

@@ -1,7 +1,7 @@
 CC = gcc
 SRCDIR = codigo
 OBJDIR = obj
-BINDIR = bin
+BINDIR = executavel
 TARGET = $(BINDIR)/meu_programa
 
 SRC = $(wildcard $(SRCDIR)/*.c)
