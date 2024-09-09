@@ -1,9 +1,13 @@
-#pragma once
+#ifndef ARVOREAUX_H
+#define ARVOREAUX_H
+
 #include "Palavra.h"
 
 typedef struct No *ArvAux;
 
 ArvAux *criaArvAux();
-int insereArvAux(ArvAux *raiz, Palavra valor, Postagem post);
-int busca_arvore(ArvAux *raiz, Palavra *palavra, char *palavraBusca);
+int insereArvAux(ArvAux *, Palavra, Postagem);
+int busca_arvore(ArvAux *, Palavra *, char *);
 void liberaArvAux(ArvAux *);
+
+#endif

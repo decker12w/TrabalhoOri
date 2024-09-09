@@ -10,16 +10,16 @@
 
 int main()
 {
-    Hash *hash = criaHash(10007);
+    Hash *hash = criaHash(12003);
 
-    FILE *arquivoTweets = fopen("corpus.csv", "r");
+    FILE *arquivoTweets = fopen("../arquivoLeitura/corpus.csv", "r");
     if (arquivoTweets == NULL)
     {
         printf("Erro ao abrir arquivo de tweets.");
         exit(1);
     }
 
-    lerArquivo("corpus.csv", hash);
+    lerArquivo("../arquivoLeitura/corpus.csv", hash);
 
     int escolha;
     char busca[MAX_BUSCA];
@@ -90,7 +90,7 @@ int main()
             Postagem postagemSaida;
 
             getItemSet(resultado, &postagemSaida);
-            fseek(arquivoTweets, postagemSaida.rrn, SEEK_SET);
+            fseek(arquivoTweets, postagemSaida.RRN, SEEK_SET);
             fgets(linhaSaida, postagemSaida.tamanhoLinha, arquivoTweets);
             printf("%s\n", linhaSaida);
         }

@@ -28,7 +28,7 @@ int main()
     {
         Postagem postagem;
         getItemSet(set, &postagem);
-        printf("RRN: %d, Tamanho da Linha: %d\n", postagem.rrn, postagem.tamanhoLinha);
+        printf("RRN: %d, Tamanho da Linha: %d\n", postagem.RRN, postagem.tamanhoLinha);
     }
 
     // Consultar um elemento na árvore

@@ -3,6 +3,8 @@
 #include "ArvoreAux.h"
 #include <string.h>
 
+// Estrutura da árvore auxiliar (AVL) para indexar as palavras e um Set para armazenar as postagens
+
 struct No
 {
     Palavra info;
@@ -11,6 +13,7 @@ struct No
     struct No *dir;
 };
 
+// Cria a árvore auxiliar
 ArvAux *criaArvAux()
 {
     ArvAux *raiz = (ArvAux *)malloc(sizeof(ArvAux));
@@ -22,6 +25,7 @@ ArvAux *criaArvAux()
     return raiz;
 }
 
+// Libera um nó da árvore auxiliar
 void liberaNoAVLAUX(struct No *no)
 {
     if (no == NULL)
@@ -35,6 +39,7 @@ void liberaNoAVLAUX(struct No *no)
     no = NULL;
 }
 
+// Libera a árvore auxiliar
 void liberaArvAux(ArvAux *raiz)
 {
     if (raiz == NULL)
@@ -46,6 +51,7 @@ void liberaArvAux(ArvAux *raiz)
     free(raiz);
 }
 
+// Retorna a altura de um nó
 int alturaNoAUX(struct No *no)
 {
     if (no == NULL)
@@ -56,11 +62,13 @@ int alturaNoAUX(struct No *no)
     return no->altura;
 }
 
+// Retorna o fator de balanceamento de um nó
 int fatorBalanceamentoNoAUX(struct No *no)
 {
     return labs(alturaNoAUX(no->esq) - alturaNoAUX(no->dir));
 }
 
+// Retorna o maior entre dois números
 int maiorAUX(int x, int y)
 {
     if (x > y)
@@ -71,6 +79,7 @@ int maiorAUX(int x, int y)
     return y;
 }
 
+// Função para buscar uma palavra na árvore
 int busca_arvore(ArvAux *raiz, Palavra *palavra, char *palavraBusca)
 {
     if (raiz == NULL || *raiz == NULL)
@@ -86,11 +95,13 @@ int busca_arvore(ArvAux *raiz, Palavra *palavra, char *palavraBusca)
     }
     else
     {
+        // Se a palavra for encontrada, retorna a palavra
         *palavra = (*raiz)->info;
         return 0;
     }
 }
 
+// Rotaciona a árvore para a esquerda
 void rotacaoLLAUX(ArvAux *A)
 {
     struct No *B;
@@ -102,6 +113,7 @@ void rotacaoLLAUX(ArvAux *A)
     *A = B;
 }
 
+// Rotaciona a árvore para a direita
 void rotacaoRRAUX(ArvAux *A)
 {
     struct No *B;
@@ -113,18 +125,21 @@ void rotacaoRRAUX(ArvAux *A)
     (*A) = B;
 }
 
+// Rotaciona a árvore para a esquerda e depois para a direita
 void rotacaoLRAUX(ArvAux *A)
 {
     rotacaoRRAUX(&(*A)->esq);
     rotacaoLLAUX(A);
 }
 
+// Rotaciona a árvore para a direita e depois para a esquerda
 void rotacaoRLAUX(ArvAux *A)
 {
     rotacaoLLAUX(&(*A)->dir);
     rotacaoRRAUX(A);
 }
 
+// Insere um nó na árvore auxiliar
 int insereArvAux(ArvAux *raiz, Palavra valor, Postagem post)
 {
     if (*raiz == NULL)
@@ -150,6 +165,7 @@ int insereArvAux(ArvAux *raiz, Palavra valor, Postagem post)
     }
 
     struct No *atual = *raiz;
+    // Se a palavra for menor que a palavra do nó atual
     if (strcmp(valor.valor, atual->info.valor) < 0)
     {
         if (insereArvAux(&(atual->esq), valor, post))
@@ -167,6 +183,7 @@ int insereArvAux(ArvAux *raiz, Palavra valor, Postagem post)
             }
         }
     }
+    // Se a palavra for maior que a palavra do nó atual
     else if (strcmp(valor.valor, atual->info.valor) > 0)
     {
         if (insereArvAux(&(atual->dir), valor, post))
@@ -187,6 +204,7 @@ int insereArvAux(ArvAux *raiz, Palavra valor, Postagem post)
     else
     {
 
+        // Se a palavra já existe, insere a postagem no set
         insereSet(atual->info.postagens, post);
     }
 
@@ -194,6 +212,7 @@ int insereArvAux(ArvAux *raiz, Palavra valor, Postagem post)
     return 1;
 }
 
+// Função para buscar o menor nó da árvore
 struct No *procuraMenorAUX(struct No *atual)
 {
     struct No *no1 = atual;
