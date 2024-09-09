@@ -204,7 +204,6 @@ Set *intNegadoSet(Set *A, Set *B)
     for (beginSet(A); !endSet(A); nextSet(A))
     {
         getItemSet(A, &postagem);
-
         if (!consultaSet(B, postagem))
         {
             insereSet(C, postagem);

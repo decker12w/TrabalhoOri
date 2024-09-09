@@ -84,7 +84,7 @@ int main()
             continue;
         }
 
-        printf("Frases relacionadas:\n\n");
+        printf("\n--------------Frases relacionadas---------------\n");
         for (beginSet(resultado); !endSet(resultado); nextSet(resultado))
         {
             char linhaSaida[MAX_LINHA];
