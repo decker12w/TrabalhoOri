@@ -16,10 +16,10 @@ int main()
     }
 
     // Criando algumas postagens para inserir
-    Postagem post1 = {1, 100}; // Exemplo de postagem 1 (rrn=1, tamanhoLinha=100)
-    Postagem post2 = {2, 150}; // Exemplo de postagem 2 (rrn=2, tamanhoLinha=150)
-    Postagem post3 = {3, 200}; // Exemplo de postagem 3 (rrn=3, tamanhoLinha=200)
-    Postagem post4 = {4, 250}; // Exemplo de postagem 4 (rrn=4, tamanhoLinha=250)
+    Postagem post1 = {1, 100}; // Exemplo de postagem 1 (RRN=1, tamanhoLinha=100)
+    Postagem post2 = {2, 150}; // Exemplo de postagem 2 (RRN=2, tamanhoLinha=150)
+    Postagem post3 = {3, 200}; // Exemplo de postagem 3 (RRN=3, tamanhoLinha=200)
+    Postagem post4 = {4, 250}; // Exemplo de postagem 4 (RRN=4, tamanhoLinha=250)
 
     // Inserindo postagens no Set A
     insereSet(setA, post1);
@@ -36,7 +36,7 @@ int main()
     {
         Postagem postagem;
         getItemSet(setA, &postagem);
-        printf("Postagem { rrn: %d, tamanhoLinha: %d }\n", postagem.rrn, postagem.tamanhoLinha);
+        printf("Postagem { RRN: %d, tamanhoLinha: %d }\n", postagem.RRN, postagem.tamanhoLinha);
     }
 
     // Iterando e exibindo os itens do Set B
@@ -45,7 +45,7 @@ int main()
     {
         Postagem postagem;
         getItemSet(setB, &postagem);
-        printf("Postagem { rrn: %d, tamanhoLinha: %d }\n", postagem.rrn, postagem.tamanhoLinha);
+        printf("Postagem { RRN: %d, tamanhoLinha: %d }\n", postagem.RRN, postagem.tamanhoLinha);
     }
 
     // Realizando a união dos sets
@@ -55,7 +55,7 @@ int main()
     {
         Postagem postagem;
         getItemSet(setUniao, &postagem);
-        printf("Postagem { rrn: %d, tamanhoLinha: %d }\n", postagem.rrn, postagem.tamanhoLinha);
+        printf("Postagem { RRN: %d, tamanhoLinha: %d }\n", postagem.RRN, postagem.tamanhoLinha);
     }
 
     // Realizando a interseção dos sets
@@ -65,7 +65,7 @@ int main()
     {
         Postagem postagem;
         getItemSet(setInterseccao, &postagem);
-        printf("Postagem { rrn: %d, tamanhoLinha: %d }\n", postagem.rrn, postagem.tamanhoLinha);
+        printf("Postagem { RRN: %d, tamanhoLinha: %d }\n", postagem.RRN, postagem.tamanhoLinha);
     }
 
     // Liberando memória dos sets

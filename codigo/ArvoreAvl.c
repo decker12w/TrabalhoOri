@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "ArvoreAvl.h"
 
+// Estrutura de um nó da árvore AVL para indexar as postagens de um arquivo
 struct No
 {
     Postagem info;
@@ -80,12 +81,12 @@ int consultaArvAVL(ArvAVL *raiz, Postagem valor)
     struct No *atual = *raiz;
     while (atual != NULL)
     {
-        if (valor.rrn == atual->info.rrn)
+        if (valor.RRN == atual->info.RRN)
         {
             return 1;
         }
 
-        if (valor.rrn > atual->info.rrn)
+        if (valor.RRN > atual->info.RRN)
         {
             atual = atual->dir;
         }
@@ -154,13 +155,13 @@ int insereArvAVL(ArvAVL *raiz, Postagem valor)
     }
 
     struct No *atual = *raiz;
-    if (valor.rrn < atual->info.rrn)
+    if (valor.RRN < atual->info.RRN)
     {
         if ((res = insereArvAVL(&(atual->esq), valor)) == 1)
         {
             if (fatorBalanceamentoNo(atual) >= 2)
             {
-                if (valor.rrn < (*raiz)->esq->info.rrn)
+                if (valor.RRN < (*raiz)->esq->info.RRN)
                 {
                     rotacaoLL(raiz);
                 }
@@ -173,13 +174,13 @@ int insereArvAVL(ArvAVL *raiz, Postagem valor)
     }
     else
     {
-        if (valor.rrn > atual->info.rrn)
+        if (valor.RRN > atual->info.RRN)
         {
             if ((res = insereArvAVL(&(atual->dir), valor)) == 1)
             {
                 if (fatorBalanceamentoNo(atual) >= 2)
                 {
-                    if ((*raiz)->dir->info.rrn < valor.rrn)
+                    if ((*raiz)->dir->info.RRN < valor.RRN)
                     {
                         rotacaoRR(raiz);
                     }

@@ -1,3 +1,7 @@
 corpus.csv
+<<<<<<< HEAD
 bin/
 obj/
+=======
+obj/*
+>>>>>>> 6a5e73ebf30914fee0d3ec867c7591ddf8651012

@@ -38,7 +38,7 @@ int main()
         {
             Postagem postagem;
             getItemSet(postagens, &postagem);
-            printf("Postagem { rrn: %d, tamanhoLinha: %d }\n", postagem.rrn, postagem.tamanhoLinha);
+            printf("Postagem { RRN: %d, tamanhoLinha: %d }\n", postagem.RRN, postagem.tamanhoLinha);
         }
     }
     else

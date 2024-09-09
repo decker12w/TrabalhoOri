@@ -6,11 +6,11 @@
 
 typedef struct hash Hash;
 
-Hash *criaHash(int TABLE_SIZE);
-void liberaHash(Hash *ha);
-Set *buscaHash(Hash *ha, char *palavra, int *deuCerto);
-int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem);
-int valorString(char *str);
-int chaveDivisao(int chave, int tamanhoHash);
-
+Hash *criaHash(int);
+void liberaHash(Hash *);
+Set *buscaHash(Hash *, char *, int *);
+int insereHash(Hash *, char *, Postagem);
+int valorString(char *);
+int chaveDivisao(int, int);
+// SET_H
 #endif
