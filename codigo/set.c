@@ -191,7 +191,7 @@ Set *interseccaoSet(Set *A, Set *B)
     return C;
 }
 
-Set *interseccaoSetComNot(Set *A, Set *B)
+Set *intNegadoSet(Set *A, Set *B)
 {
     if (A == NULL || B == NULL)
     {
@@ -204,7 +204,6 @@ Set *interseccaoSetComNot(Set *A, Set *B)
     for (beginSet(A); !endSet(A); nextSet(A))
     {
         getItemSet(A, &postagem);
-
         if (!consultaSet(B, postagem))
         {
             insereSet(C, postagem);

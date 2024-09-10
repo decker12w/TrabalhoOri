@@ -1,50 +1,12 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include "utilitario.h"
+#include "handler.h"
 
 #define MAX_COMPONENTES 100
 #define MAX_PILHA 100
 
-int palavraComposta(char *valor, int i, int tamanho)
-{
-    return (i > 0 && i < tamanho - 1 && isalpha(valor[i - 1]) && isalpha(valor[i + 1]));
-}
-
-void limparString(char *valor)
-{
-    int tamanho = strlen(valor);
-    int quantidadeCaracteresValidos = 0;
-
-    char stringLimpa[tamanho + 1];
-
-    for (int i = 0; i < tamanho; i++)
-    {
-        if (isalpha(valor[i]) || isdigit(valor[i]))
-        {
-            stringLimpa[quantidadeCaracteresValidos++] = tolower(valor[i]);
-        }
-        else if ((valor[i] == '-' || valor[i] == '\'') && palavraComposta(valor, i, tamanho))
-        {
-            stringLimpa[quantidadeCaracteresValidos++] = valor[i];
-        }
-        else if (quantidadeCaracteresValidos > 0 && stringLimpa[quantidadeCaracteresValidos - 1] != ' ')
-        {
-            stringLimpa[quantidadeCaracteresValidos++] = ' ';
-        }
-    }
-
-    if (quantidadeCaracteresValidos > 0 && stringLimpa[quantidadeCaracteresValidos - 1] == ' ')
-    {
-        quantidadeCaracteresValidos--;
-    }
-
-    stringLimpa[quantidadeCaracteresValidos] = '\0';
-
-    strcpy(valor, stringLimpa);
-}
-
-char **separarBuscaEmComponentes(char *busca, int *numComponentes)
+char **Componente(char *busca, int *numComponentes)
 {
     *numComponentes = 0;
 
@@ -116,7 +78,7 @@ int precedencia(char *operacao)
     return 0;
 }
 
-char **converterComponentesParaPostfix(char **componentes, int tamanho, int *tamanhoPostfix)
+char **converterParaPostfix(char **componentes, int tamanho, int *tamanhoPostfix)
 {
     char **resultado = (char **)malloc(MAX_PILHA * sizeof(char *));
     if (resultado == NULL)
@@ -217,11 +179,11 @@ Set *avaliarPostfix(Hash *hash, char **postfix, int quantidade, int *tipoErro)
             {
                 if (elementoNegado == 0)
                 {
-                    pilha[topo] = interseccaoSetComNot(set1, set2);
+                    pilha[topo] = intNegadoSet(set1, set2);
                 }
                 else
                 {
-                    pilha[topo] = interseccaoSetComNot(set2, set1);
+                    pilha[topo] = intNegadoSet(set2, set1);
                 }
             }
             else

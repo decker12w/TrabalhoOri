@@ -6,16 +6,16 @@
 typedef struct set Set;
 
 Set *criaSet();
-void liberaSet(Set *);
-int insereSet(Set *, Postagem);
-int tamanhoSet(Set *);
-int consultaSet(Set *, Postagem);
-Set *uniaoSet(Set *, Set *);
-Set *interseccaoSet(Set *, Set *);
-Set *interseccaoSetComNot(Set *, Set *);
-void beginSet(Set *);
-int endSet(Set *);
-void nextSet(Set *);
-void getItemSet(Set *, Postagem *);
+void liberaSet(Set *s);
+int insereSet(Set *s, Postagem postagem);
+int tamanhoSet(Set *s);
+int consultaSet(Set *s, Postagem postagem);
+Set *uniaoSet(Set *A, Set *B);
+Set *interseccaoSet(Set *A, Set *B);
+Set *intNegadoSet(Set *A, Set *B);
+void beginSet(Set *s);
+int endSet(Set *s);
+void nextSet(Set *s);
+void getItemSet(Set *s, Postagem *postagem);
 
-#endif
+#endif // SET_H
