@@ -102,7 +102,7 @@ int busca_arvore(ArvAux *raiz, Palavra *palavra, char *palavraBusca)
 }
 
 // Rotaciona a árvore para a esquerda
-void rotacaoLLAUX(ArvAux *A)
+void rotacaoLLAUX(ArvAux *A)//
 {
     struct No *B;
     B = (*A)->esq;

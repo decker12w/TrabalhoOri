@@ -10,8 +10,10 @@
 
 int main()
 {
+    // Cria tabela hash com tamanho inicial
     Hash *hash = criaHash(12003);
 
+    // Abre o arquivo de tweets
     FILE *arquivoTweets = fopen("../arquivoLeitura/corpus.csv", "r");
     if (arquivoTweets == NULL)
     {
@@ -19,29 +21,36 @@ int main()
         exit(1);
     }
 
+    // Lê o arquivo e armazena os dados na hash
     lerArquivo("../arquivoLeitura/corpus.csv", hash);
 
     int escolha;
     char busca[MAX_BUSCA];
+
     while (1)
     {
+        // Menu de opções
         printf("1-  Busca no banco de dados\n2-  Sair da busca\nOpção: ");
         scanf("%d", &escolha);
 
+        // Validação da escolha
         if (!(escolha == 1 || escolha == 2))
         {
             printf("(ERRO) Opção inválida!\n\n");
             continue;
         }
 
+        // Opção de sair do loop
         if (escolha == 2)
         {
-            break; // termina o programa
+            break;
         }
 
+        // Recebe a busca do usuário
         printf("Pesquise os elementos do arquivo usando (AND, OR, NOT): \n");
         scanf(" %[^\n]", busca);
 
+        // Separa a busca em componentes lógicos
         int numComponentes;
         char **componentes = Componente(busca, &numComponentes);
 
@@ -51,6 +60,7 @@ int main()
             continue;
         }
 
+        // Converte a busca para expressão postfix
         int tamanhoPostfix, tipoErro;
         char **postfix = converterParaPostfix(componentes, numComponentes, &tamanhoPostfix);
 
@@ -60,10 +70,12 @@ int main()
             continue;
         }
 
+        // Avalia a expressão postfix
         Set *resultado = avaliarPostfix(hash, postfix, tamanhoPostfix, &tipoErro);
 
         if (resultado == NULL)
         {
+            // Trata diferentes erros de avaliação
             switch (tipoErro)
             {
             case 1:
@@ -84,18 +96,21 @@ int main()
             continue;
         }
 
+        // Exibe os tweets encontrados
         printf("\n--------------Frases relacionadas---------------\n");
         for (beginSet(resultado); !endSet(resultado); nextSet(resultado))
         {
             char linhaSaida[MAX_LINHA];
             Postagem postagemSaida;
 
+            // Busca a postagem pelo RRN e exibe
             getItemSet(resultado, &postagemSaida);
             fseek(arquivoTweets, postagemSaida.RRN, SEEK_SET);
             fgets(linhaSaida, postagemSaida.tamanhoLinha, arquivoTweets);
             printf("\n%s", linhaSaida);
         }
 
+        // Libera memória dos componentes e postfix
         for (int i = 0; i < numComponentes; i++)
         {
             free(componentes[i]);
@@ -107,6 +122,7 @@ int main()
         printf("\n");
     }
 
+    // Libera a tabela hash e fecha o arquivo
     liberaHash(hash);
     fclose(arquivoTweets);
     return 0;
