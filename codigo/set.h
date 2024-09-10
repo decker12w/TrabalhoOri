@@ -17,3 +17,5 @@ void beginSet(Set *s);
 int endSet(Set *s);
 void nextSet(Set *s);
 void getItemSet(Set *s, Postagem *postagem);
+
+#endif // SET_H
