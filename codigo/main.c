@@ -1,3 +1,6 @@
+// Integrantes
+// Vitor Taichi Taira 
+// Jose Maia de Oliveira
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
